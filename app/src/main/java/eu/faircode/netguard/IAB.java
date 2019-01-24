@@ -133,8 +133,15 @@ public class IAB implements ServiceConnection {
         editor.apply();
     }
 
+    /////////////////////////////////////////////////////////
+    ///////                                           ///////
+    ///////                  CHANGED                  ///////
+    ///////                                           ///////
+    /////////////////////////////////////////////////////////
+
     public boolean isPurchased(String sku) throws RemoteException {
-        return getPurchases().contains(sku);
+        //return getPurchases().contains(sku);
+        return true;
     }
 
     public List<String> getPurchases() throws RemoteException {
