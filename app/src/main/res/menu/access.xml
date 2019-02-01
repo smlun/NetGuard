@@ -16,11 +16,11 @@
         android:id="@+id/menu_allow"
         android:title="@string/title_allow" />
     <item
-        android:id="@+id/menu_allow_once"
-        android:title="Allow once then block" />
-    <item
         android:id="@+id/menu_block"
         android:title="@string/title_block" />
+    <item
+        android:id="@+id/menu_block_once"
+        android:title="Block next access" />
     <item
         android:id="@+id/menu_reset"
         android:title="@string/menu_reset" />

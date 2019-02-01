@@ -61,6 +61,7 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.request.RequestOptions;
@@ -749,6 +750,17 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
                                     } else
                                         context.startActivity(new Intent(context, ActivityPro.class));
                                     result = true;
+                                    break;
+
+                                /////////////////////////////////////////////////////////
+                                ///////                                           ///////
+                                ///////                  CHANGED                  ///////
+                                ///////                                           ///////
+                                /////////////////////////////////////////////////////////
+
+                                case R.id.menu_block_once:
+                                    Toast toast = Toast.makeText(context, "Button works!", Toast.LENGTH_SHORT);
+                                    toast.show();
                                     break;
 
                                 case R.id.menu_block:
