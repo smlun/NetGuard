@@ -121,7 +121,18 @@ public class AdapterAccess extends CursorAdapter {
         if (block < 0)
             ivBlock.setImageDrawable(null);
         else {
-            ivBlock.setImageResource(block > 0 ? R.drawable.host_blocked : R.drawable.host_allowed);
+            /////////////////////////////////////////////////////////
+            ///////                                           ///////
+            ///////                  CHANGED                  ///////
+            ///////                                           ///////
+            /////////////////////////////////////////////////////////
+//          ivBlock.setImageResource(block > 0 ? R.drawable.host_blocked : R.drawable.host_allowed);
+            if (block == 0)
+                ivBlock.setImageResource(R.drawable.host_allowed);
+            else if (block == 1)
+                ivBlock.setImageResource(R.drawable.host_blocked);
+            else if (block == 2)
+                ivBlock.setImageResource(R.drawable.host_block_once);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 Drawable wrap = DrawableCompat.wrap(ivBlock.getDrawable());
                 DrawableCompat.setTint(wrap, block > 0 ? colorOff : colorOn);
