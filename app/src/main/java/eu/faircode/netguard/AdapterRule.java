@@ -710,6 +710,14 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
                     markPro(context, popup.getMenu().findItem(R.id.menu_allow), ActivityPro.SKU_FILTER);
                     markPro(context, popup.getMenu().findItem(R.id.menu_block), ActivityPro.SKU_FILTER);
 
+                    /////////////////////////////////////////////////////////
+                    ///////                                           ///////
+                    ///////                  CHANGED                  ///////
+                    ///////                                           ///////
+                    /////////////////////////////////////////////////////////
+                    // markPro(context, popup.getMenu().findItem(R.id.menu_block_once), ActivityPro.SKU_FILTER);
+
+
                     // Whois
                     final Intent lookupIP = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.dnslytics.com/whois-lookup/" + daddr));
                     if (pm.resolveActivity(lookupIP, 0) == null)
@@ -790,7 +798,13 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
                                     return true;
                             }
 
-                            if (menu == R.id.menu_allow || menu == R.id.menu_block || menu == R.id.menu_reset)
+                            /////////////////////////////////////////////////////////
+                            ///////                                           ///////
+                            ///////                  CHANGED                  ///////
+                            ///////                                           ///////
+                            /////////////////////////////////////////////////////////
+
+                            if (menu == R.id.menu_allow || menu == R.id.menu_block || menu == R.id.menu_reset || menu == R.id.menu_block_once)
                                 new AsyncTask<Object, Object, Long>() {
                                     @Override
                                     protected Long doInBackground(Object... objects) {
