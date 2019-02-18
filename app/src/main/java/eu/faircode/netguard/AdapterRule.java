@@ -813,6 +813,14 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
                     else if (block == 1)
                         popup.getMenu().removeItem(R.id.menu_block);
 
+                    /////////////////////////////////////////////////////////
+                    ///////                                           ///////
+                    ///////                  CHANGED                  ///////
+                    ///////                                           ///////
+                    /////////////////////////////////////////////////////////
+                    else if (block == 2)
+                        popup.getMenu().removeItem(R.id.menu_block_once);
+
                     popup.show();
                 }
             });
