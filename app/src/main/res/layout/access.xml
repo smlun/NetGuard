@@ -6,8 +6,21 @@
     android:orientation="horizontal"
     tools:context=".ActivityMain">
 
+    <!--<TextView-->
+        <!--android:id="@+id/tvTime"-->
+        <!--android:layout_width="60dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="top"-->
+        <!--android:textAppearance="@style/TextSmall" />-->
+
+    <!--/////////////////////////////////////////////////////////-->
+    <!--///////                                           ///////-->
+    <!--///////                  CHANGED                  ///////-->
+    <!--///////                                           ///////-->
+    <!--/////////////////////////////////////////////////////////-->
+
     <TextView
-        android:id="@+id/tvTime"
+        android:id="@+id/blockInt"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:layout_gravity="top"

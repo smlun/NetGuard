@@ -109,7 +109,13 @@ public class AdapterAccess extends CursorAdapter {
         int connections = cursor.isNull(colConnections) ? -1 : cursor.getInt(colConnections);
 
         // Get views
-        TextView tvTime = view.findViewById(R.id.tvTime);
+        /////////////////////////////////////////////////////////
+        ///////                                           ///////
+        ///////                  CHANGED                  ///////
+        ///////                                           ///////
+        /////////////////////////////////////////////////////////
+//        TextView tvTime = view.findViewById(R.id.tvTime);
+        TextView blockInt = view.findViewById(R.id.blockInt);
         ImageView ivBlock = view.findViewById(R.id.ivBlock);
         final TextView tvDest = view.findViewById(R.id.tvDest);
         LinearLayout llTraffic = view.findViewById(R.id.llTraffic);
@@ -117,9 +123,11 @@ public class AdapterAccess extends CursorAdapter {
         TextView tvTraffic = view.findViewById(R.id.tvTraffic);
 
         // Set values
-        tvTime.setText(new SimpleDateFormat("dd HH:mm").format(time));
-        if (block < 0)
+//        tvTime.setText(new SimpleDateFormat("dd HH:mm").format(time));
+        if (block < 0) {
+            blockInt.setText(String.valueOf(block));
             ivBlock.setImageDrawable(null);
+        }
         else {
             /////////////////////////////////////////////////////////
             ///////                                           ///////
@@ -127,12 +135,18 @@ public class AdapterAccess extends CursorAdapter {
             ///////                                           ///////
             /////////////////////////////////////////////////////////
 //          ivBlock.setImageResource(block > 0 ? R.drawable.host_blocked : R.drawable.host_allowed);
-            if (block == 0)
+            if (block == 0) {
+                blockInt.setText(String.valueOf(block));
                 ivBlock.setImageResource(R.drawable.host_allowed);
-            else if (block == 1)
+            }
+            else if (block == 1) {
+                blockInt.setText(String.valueOf(block));
                 ivBlock.setImageResource(R.drawable.host_blocked);
-            else if (block == 2)
+            }
+            else if (block == 2) {
+                blockInt.setText(String.valueOf(block));
                 ivBlock.setImageResource(R.drawable.host_block_once);
+            }
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 Drawable wrap = DrawableCompat.wrap(ivBlock.getDrawable());
                 DrawableCompat.setTint(wrap, block > 0 ? colorOff : colorOn);
