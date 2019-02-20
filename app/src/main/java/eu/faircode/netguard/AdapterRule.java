@@ -767,10 +767,10 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
                                 /////////////////////////////////////////////////////////
 
                                 case R.id.menu_block_once:
-                                    DatabaseHelper.getInstance(context).setAccess(id, 2);
+                                    DatabaseHelper.getInstance(context).setAccess(id, 1);
                                     ServiceSinkhole.reload("block once host", context, false);
-                                    DatabaseHelper.getInstance(context).setAccess(id, -1);
                                     result = true;
+                                    // INSERT METHOD TO TRIGGER NOTIFICATION HERE
                                     break;
 
                                 case R.id.menu_block:
@@ -828,7 +828,7 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
                     ///////                                           ///////
                     ///////                  CHANGED                  ///////
                     ///////                                           ///////
-                    /////////////////////////////////////////////////////////
+                    ///////////////////////////////////////////////////////
                     else if (block == 2)
                         popup.getMenu().removeItem(R.id.menu_block_once);
 
