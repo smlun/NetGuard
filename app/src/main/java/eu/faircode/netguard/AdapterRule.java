@@ -683,7 +683,7 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
                     final String daddr = cursor.getString(cursor.getColumnIndex("daddr"));
                     final int dport = cursor.getInt(cursor.getColumnIndex("dport"));
                     long time = cursor.getLong(cursor.getColumnIndex("time"));
-                    int block = cursor.getInt(cursor.getColumnIndex("block"));
+                    final int block = cursor.getInt(cursor.getColumnIndex("block"));
 
                     PopupMenu popup = new PopupMenu(context, anchor);
                     popup.inflate(R.menu.access);
@@ -766,11 +766,14 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
                                 ///////                                           ///////
                                 /////////////////////////////////////////////////////////
 
+                                // 0 : Allowed
+                                // 1 : Blocked
+                                // -1 : Reset
+
                                 case R.id.menu_block_once:
-                                    DatabaseHelper.getInstance(context).setAccess(id, 1);
+                                    DatabaseHelper.getInstance(context).setAccess(id, 2);
                                     ServiceSinkhole.reload("block once host", context, false);
                                     result = true;
-                                    // INSERT METHOD TO TRIGGER NOTIFICATION HERE
                                     break;
 
                                 case R.id.menu_block:
