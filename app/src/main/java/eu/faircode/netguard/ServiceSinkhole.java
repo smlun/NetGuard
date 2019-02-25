@@ -1581,6 +1581,18 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
         int colResource = cursor.getColumnIndex("resource");
         int colDPort = cursor.getColumnIndex("dport");
         int colBlock = cursor.getColumnIndex("block");
+
+
+        /////////////////////////////////////////////////////////
+        ///////                                           ///////
+        ///////                  CHANGED                  ///////
+        ///////                                           ///////
+        /////////////////////////////////////////////////////////
+
+        if (cursor.getInt(colBlock) == 2) { // If it is set to block once, update it to allow next access
+            DatabaseHelper.getInstance(ServiceSinkhole.this).setAccess(cursor.getInt(colUid), 0);
+        }
+
         int colTime = cursor.getColumnIndex("time");
         int colTTL = cursor.getColumnIndex("ttl");
         while (cursor.moveToNext()) {
