@@ -685,20 +685,6 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
                     final long time = cursor.getLong(cursor.getColumnIndex("time"));
                     final int block = cursor.getInt(cursor.getColumnIndex("block"));
 
-                    /////////////////////////////////////////////////////////
-                    ///////                                           ///////
-                    ///////                  CHANGED                  ///////
-                    ///////                                           ///////
-                    /////////////////////////////////////////////////////////
-
-                    final int uid = cursor.getInt(cursor.getColumnIndex("uid"));
-                    try {
-                        final String dname = cursor.getString(cursor.getColumnIndex("dname"));
-                    } catch(Exception e) {
-                        Toast toast = Toast.makeText(context, "Can't get dname", Toast.LENGTH_SHORT);
-                        toast.show();
-                    }
-
                     PopupMenu popup = new PopupMenu(context, anchor);
                     popup.inflate(R.menu.access);
 
@@ -785,19 +771,7 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
                                 // -1 : Reset
 
                                 case R.id.menu_block_once:
-
-//                                    final Packet packet = new Packet();
-//                                    packet.version = version;
-//                                    packet.protocol = protocol;
-//                                    packet.daddr = daddr;
-//                                    packet.dport = dport;
-//                                    packet.time = time;
-//                                    packet.uid = uid;
-//                                    packet.allowed = false;
-
-//                                    DatabaseHelper.getInstance(context).updateAccess(packet, dname, 0);
-
-                                    DatabaseHelper.getInstance(context).setAccess(id, -1); // Set it back to default
+                                    DatabaseHelper.getInstance(context).setAccess(id, 2); // Set it back to default
                                     ServiceSinkhole.reload("block once host", context, false);
                                     result = true;
                                     break;
