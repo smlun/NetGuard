@@ -1830,6 +1830,7 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
 
     // Called from native code
     private Allowed isAddressAllowed(Packet packet) {
+        Log.i(TAG, "smlun: Calling native code isAddressAllowed(" + packet.toString() + ").");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         lock.readLock().lock();
@@ -1866,7 +1867,7 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
                             else {
                                 filtered = true;
                                 packet.allowed = !rule.isBlocked();
-                                Log.i(TAG, "Filtering " + packet +
+                                Log.i(TAG, "smlun: Filtering " + packet +
                                         " allowed=" + packet.allowed + " rule " + rule);
                             }
                         }
