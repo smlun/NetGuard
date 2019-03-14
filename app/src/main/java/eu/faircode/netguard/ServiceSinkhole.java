@@ -217,6 +217,9 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
     private native void jni_done(long context);
 
     public static void setPcap(boolean enabled, Context context) {
+        Log.i(TAG, "[ServiceSinkhole.java, setPcap()] Entering setPcap method.");
+
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         int record_size = 64;
@@ -1440,6 +1443,7 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
                     @Override
                     public void run() {
                         Log.i(TAG, "Running tunnel");
+                        Log.i(TAG, "[ServiceSinkhole.java] Running tunnel thread jni_run.");
                         jni_run(jni_context, vpn.getFd(), mapForward.containsKey(53), rcode);
                         Log.i(TAG, "Tunnel exited");
                         tunnelThread = null;
@@ -1830,7 +1834,7 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
 
     // Called from native code
     private Allowed isAddressAllowed(Packet packet) {
-        Log.i(TAG, "smlun: Calling native code isAddressAllowed(" + packet.toString() + ").");
+        Log.i(TAG, "smlun: [ServiceSinkhole.java, isAddressAllowed()] Calling native code; sending packet: " + packet.toString() + ".");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         lock.readLock().lock();
@@ -1867,8 +1871,7 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
                             else {
                                 filtered = true;
                                 packet.allowed = !rule.isBlocked();
-                                Log.i(TAG, "smlun: Filtering " + packet +
-                                        " allowed=" + packet.allowed + " rule " + rule);
+                                Log.i(TAG, "smlun: Filtering " + packet);
                             }
                         }
                     } catch (UnknownHostException ex) {

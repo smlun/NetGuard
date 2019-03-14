@@ -24,7 +24,7 @@ size_t pcap_record_size = 64;
 long pcap_file_size = 2 * 1024 * 1024;
 
 void write_pcap_hdr() {
-    syslog(LOG_CRIT, "smlun: Entering write_pcap_hdr");
+    syslog(LOG_CRIT, "smlun: [pcap.c, write_pcap_hdr()] Entering write_pcap_hdr");
     struct pcap_hdr_s pcap_hdr;
     pcap_hdr.magic_number = 0xa1b2c3d4;
     pcap_hdr.version_major = 2;
@@ -37,7 +37,7 @@ void write_pcap_hdr() {
 }
 
 void write_pcap_rec(const uint8_t *buffer, size_t length) {
-    syslog(LOG_CRIT, "smlun: Entering write_pcap_rec");
+    syslog(LOG_CRIT, "smlun: [pcap.c, write_pcap_rec()] Entering write_pcap_rec");
     struct timespec ts;
     if (clock_gettime(CLOCK_REALTIME, &ts))
         log_android(ANDROID_LOG_ERROR, "clock_gettime error %d: %s", errno, strerror(errno));
@@ -55,7 +55,7 @@ void write_pcap_rec(const uint8_t *buffer, size_t length) {
 }
 
 void write_pcap(const void *ptr, size_t len) {
-    syslog(LOG_CRIT, "smlun: Entering write_pcap");
+    syslog(LOG_CRIT, "smlun: [pcap.c, write_pcap()] Entering write_pcap");
     if (fwrite(ptr, len, 1, pcap_file) < 1)
         log_android(ANDROID_LOG_ERROR, "PCAP fwrite error %d: %s", errno, strerror(errno));
     else {

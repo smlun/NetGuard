@@ -175,7 +175,7 @@ void parse_dns_response(const struct arguments *args, const struct udp_session *
             // Log qname
             char name[DNS_QNAME_MAX + 40 + 1];
             sprintf(name, "qtype %d qname %s rcode %d", qtype, qname, dns->rcode);
-            syslog(LOG_CRIT, "smlun: Creating packet in dns.c using UDP protocol.");
+            syslog(LOG_CRIT, "smlun: [dns.c, parse_dns_response()] Creating packet in dns.c using UDP protocol.");
             jobject objPacket = create_packet(
                     args, u->version, IPPROTO_UDP, "",
                     source, ntohs(u->source), dest, ntohs(u->dest),
