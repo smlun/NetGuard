@@ -296,6 +296,7 @@ void handle_ip(const struct arguments *args,
     else if (protocol == IPPROTO_TCP && !syn)
         allowed = 1; // assume existing session
     else {
+        syslog(LOG_CRIT, "smlun: Creating packet in ip.c");
         jobject objPacket = create_packet(
                 args, version, protocol, flags, source, sport, dest, dport, "", uid, 0);
         redirect = is_address_allowed(args, objPacket);
