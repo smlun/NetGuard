@@ -771,7 +771,7 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
                                 // -1 : Reset
 
                                 case R.id.menu_block_once:
-                                    DatabaseHelper.getInstance(context).setAccess(id, 2); // Set it back to default
+                                    DatabaseHelper.getInstance(context).setAccess(id, 2);
                                     ServiceSinkhole.reload("block once host", context, false);
                                     result = true;
                                     break;
