@@ -244,6 +244,8 @@ Java_eu_faircode_netguard_ServiceSinkhole_jni_1pcap(
     //if (pthread_mutex_lock(&lock))
     //    log_android(ANDROID_LOG_ERROR, "pthread_mutex_lock failed");
 
+    syslog(LOG_CRIT, "smlun: JNI call to 1pcap method");
+
     if (name_ == NULL) {
         if (pcap_file != NULL) {
             int flags = fcntl(fileno(pcap_file), F_GETFL, 0);
