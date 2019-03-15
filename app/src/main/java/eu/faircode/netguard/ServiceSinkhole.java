@@ -1565,6 +1565,7 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
     }
 
     private void prepareUidIPFilters(String dname) {
+        Log.i(TAG, "smlun: [ServiceSinkhole.java, prepareUidIPFilters()] Preparing mapUidIPFilters...");
         SharedPreferences lockdown = getSharedPreferences("lockdown", Context.MODE_PRIVATE);
 
         lock.writeLock().lock();
@@ -1811,6 +1812,7 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
 
     // Called from native code
     private void dnsResolved(ResourceRecord rr) {
+        Log.i(TAG, "smlun: [ServiceSinkhole.java, dnsResolved()] Calling native code with ResourceRecord RR");
         if (DatabaseHelper.getInstance(ServiceSinkhole.this).insertDns(rr)) {
             Log.i(TAG, "New IP " + rr);
             prepareUidIPFilters(rr.QName);
@@ -1834,7 +1836,7 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
 
     // Called from native code
     private Allowed isAddressAllowed(Packet packet) {
-        Log.i(TAG, "smlun: [ServiceSinkhole.java, isAddressAllowed()] Calling native code; sending packet: " + packet.toString() + ".");
+        Log.i(TAG, "smlun: [ServiceSinkhole.java, isAddressAllowed()] Calling native code with packet: \n" + packet.toString() + ".");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         lock.readLock().lock();
