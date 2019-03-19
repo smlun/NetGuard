@@ -1564,6 +1564,12 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
         lock.writeLock().unlock();
     }
 
+
+    /////////////////////////////////////////////////////////
+    ///////                                           ///////
+    ///////                  CHANGED                  ///////
+    ///////                                           ///////
+    /////////////////////////////////////////////////////////
     private void prepareUidIPFilters(String dname) {
         Log.i(TAG, "smlun: [ServiceSinkhole.java, prepareUidIPFilters()] Preparing mapUidIPFilters...");
         SharedPreferences lockdown = getSharedPreferences("lockdown", Context.MODE_PRIVATE);
@@ -1598,6 +1604,7 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
             boolean block = (cursor.getInt(colBlock) > 0);
             long time = (cursor.isNull(colTime) ? new Date().getTime() : cursor.getLong(colTime));
             long ttl = (cursor.isNull(colTTL) ? 7 * 24 * 3600 * 1000L : cursor.getLong(colTTL));
+            int blockInt = (cursor.getInt(colBlock));
 
             if (isLockedDown(last_metered)) {
                 String[] pkg = getPackageManager().getPackagesForUid(uid);
@@ -1606,10 +1613,11 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
                         continue;
                 }
             }
-
+            ////// should block int go inside here too?
             IPKey key = new IPKey(version, protocol, dport, uid);
             synchronized (mapUidIPFilters) {
                 if (!mapUidIPFilters.containsKey(key))
+                    Log.i(TAG, "smlun: [ServiceSinkhole.java, prepareUidIPFilters()] Inserting key into mapUidIPFilters<>");
                     mapUidIPFilters.put(key, new HashMap());
 
                 try {
@@ -1624,10 +1632,11 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
                         //if (dname != null)
                         Log.i(TAG, "Set filter " + key + " " + daddr + "/" + dresource + "=" + block);
 
-                        boolean exists = mapUidIPFilters.get(key).containsKey(iname);
-                        if (!exists || !mapUidIPFilters.get(key).get(iname).isBlocked()) {
-                            IPRule rule = new IPRule(key, name + "/" + iname, block, time + ttl);
-                            mapUidIPFilters.get(key).put(iname, rule);
+                        boolean exists = mapUidIPFilters.get(key).containsKey(iname); // If map already contains that key,
+                        if (!exists || !mapUidIPFilters.get(key).get(iname).isBlocked()) { // If does not exist or not address is not blocked
+                            Log.i(TAG, "smlun: [ServiceSinkhole.java, prepareUidIPFilters()] Creating IPRule to put in key");
+                            IPRule rule = new IPRule(key, name + "/" + iname, block, time + ttl, blockInt);
+                            mapUidIPFilters.get(key).put(iname, rule); // Insert key inside
                             if (exists)
                                 Log.w(TAG, "Address conflict " + key + " " + daddr + "/" + dresource);
                         } else if (exists) {
@@ -3068,17 +3077,28 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
         }
     }
 
+    /////////////////////////////////////////////////////////
+    ///////                                           ///////
+    ///////                  CHANGED                  ///////
+    ///////                                           ///////
+    /////////////////////////////////////////////////////////
     private class IPRule {
         private IPKey key;
         private String name;
         private boolean block;
         private long expires;
+        private int blockInt;
 
-        public IPRule(IPKey key, String name, boolean block, long expires) {
+        public IPRule(IPKey key, String name, boolean block, long expires, int blockInt) {
             this.key = key;
             this.name = name;
             this.block = block;
             this.expires = expires;
+            this.blockInt = blockInt;
+        }
+
+        public int getBlockInt() {
+            return this.blockInt;
         }
 
         public boolean isBlocked() {
