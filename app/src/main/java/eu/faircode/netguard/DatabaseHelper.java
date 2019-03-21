@@ -45,7 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "NetGuard.Database";
 
     private static final String DB_NAME = "Netguard";
-    private static final int DB_VERSION = 21;
+    private static final int DB_VERSION = 22;
 
     private static boolean once = true;
     private static List<LogChangedListener> logChangedListeners = new ArrayList<>();
@@ -123,6 +123,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createTableDns(db);
         createTableForward(db);
         createTableApp(db);
+        createTableBlockOnce(db);
     }
 
     @Override
@@ -176,6 +177,119 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE UNIQUE INDEX idx_access ON access(uid, version, protocol, daddr, dport)");
         db.execSQL("CREATE INDEX idx_access_daddr ON access(daddr)");
         db.execSQL("CREATE INDEX idx_access_block ON access(block)");
+    }
+
+    /////////////////////////////////////////////////////////
+    ///////                                           ///////
+    ///////                  CHANGED                  ///////
+    ///////                                           ///////
+    /////////////////////////////////////////////////////////
+    private void createTableBlockOnce(SQLiteDatabase db) {
+        Log.i(TAG, "smlun: Creating blockonce table...");
+        db.execSQL("CREATE TABLE blockonce (" +
+                " ID INTEGER PRIMARY KEY AUTOINCREMENT" +
+                ", address TEXT NOT NULL" +
+                ", startTime INTEGER NOT NULL" +
+                ");");
+        Log.i(TAG, "smlun: blockonce table created.");
+    }
+
+    public boolean checkIfBlockOnceExist(String address) {
+        lock.readLock().lock();
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+
+            Cursor cursor = db.rawQuery("SELECT * FROM blockonce WHERE address = " + "'" + address + "'", null);
+
+            Log.i(TAG, "smlun: Query count: " + cursor.getCount() + ".");
+
+            if(cursor.getCount() <= 0) {
+                cursor.close();
+                return false;
+            }
+            cursor.close();
+
+            return true;
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    public void insertBlockOnce(String address, long startTime) {
+        Log.i(TAG, "smlun: " + address + " already exists!");
+        if(!checkIfBlockOnceExist(address)) {
+            lock.writeLock().lock();
+            try {
+                SQLiteDatabase db = this.getWritableDatabase();
+                db.beginTransactionNonExclusive();
+                try {
+                    ContentValues cv = new ContentValues();
+                    cv.put("address", address);
+                    cv.put("startTime", startTime);
+
+                    db.insert("blockonce", null, cv);
+
+                    db.setTransactionSuccessful();
+
+                    Log.i(TAG, "smlun: Inserted into blockonce table.");
+
+                } finally {
+                    db.endTransaction();
+                }
+            } finally {
+                lock.writeLock().unlock();
+            }
+        }
+    }
+
+    public boolean blockTimeOut(String address, long now) {
+        lock.readLock().lock();
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+
+            long start = db.compileStatement("SELECT startTime FROM blockonce WHERE address = " + "'" + address + "'").simpleQueryForLong();
+
+            Log.i(TAG, "smlun: Time left: " + (now - start) + " " + ((now - start) > 60000));
+
+            if ((now - start) > 60000) {
+                db.delete("blockonce", "address = ?", new String[]{address});
+                Log.i(TAG, "smlun: Deleting entry from blockonce table.");
+                return true;
+            }
+            else
+                return false;
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    public void setAccessUsingAddress(String address, int block) {
+        lock.writeLock().lock();
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.beginTransactionNonExclusive();
+            try {
+                ContentValues cv = new ContentValues();
+                cv.put("block", block);
+                cv.put("allowed", -1);
+
+                Log.i(TAG, "smlun: Looking for " + address + " in table");
+
+                if (db.update("access", cv, "daddr = ?", new String[]{address}) != 1)
+                    Log.e(TAG, "Set access failed");
+
+                db.setTransactionSuccessful();
+
+                Log.i(TAG, "smlun: Address reset back to -1");
+
+            } finally {
+                db.endTransaction();
+            }
+        } finally {
+            lock.writeLock().unlock();
+        }
+
+        notifyAccessChanged();
     }
 
     private void createTableDns(SQLiteDatabase db) {
@@ -344,6 +458,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             if (oldVersion < 21) {
                 createTableApp(db);
                 oldVersion = 21;
+            }
+
+            if (oldVersion < 22) {
+                db.execSQL("DROP TABLE blockonce");
+                createTableBlockOnce(db);
+                oldVersion = 22;
             }
 
             if (oldVersion == DB_VERSION) {
@@ -909,6 +1029,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /////////////////////////////////////////////////////////
+    ///////                                           ///////
+    ///////                  CHANGED                  ///////
+    ///////                                           ///////
+    /////////////////////////////////////////////////////////
     public Cursor getAccessDns(String dname) {
         long now = new Date().getTime();
         lock.readLock().lock();
@@ -917,7 +1042,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             // There is a segmented index on dns.qname
             // There is an index on access.daddr and access.block
-            String query = "SELECT a.uid, a.version, a.protocol, a.daddr, d.resource, a.dport, a.block, d.time, d.ttl";
+            String query = "SELECT a.ID, a.uid, a.version, a.protocol, a.daddr, d.resource, a.dport, a.block, d.time, d.ttl"; // Get the ID as well
             query += " FROM access AS a";
             query += " LEFT JOIN dns AS d";
             query += "   ON d.qname = a.daddr";
