@@ -78,7 +78,7 @@ int check_tun(const struct arguments *args,
                 log_android(ANDROID_LOG_WARN, "Maximum tun msg length %d", max_tun_msg);
             }
 
-            syslog(LOG_CRIT, "smlun: [ip.c, check_tun()] Call handle_ip() in check_tun");
+            syslog(LOG_CRIT, "[ip.c, check_tun()] Call handle_ip() in check_tun");
 
             // Handle IP from tun
             handle_ip(args, buffer, (size_t) length, epoll_fd, sessions, maxsessions);
@@ -298,7 +298,7 @@ void handle_ip(const struct arguments *args,
     else if (protocol == IPPROTO_TCP && !syn)
         allowed = 1; // assume existing session
     else {
-        syslog(LOG_CRIT, "smlun: [ip.c, handle_ip()] Creating packet...");
+        syslog(LOG_CRIT, "[ip.c, handle_ip()] Creating packet...");
         jobject objPacket = create_packet(
                 args, version, protocol, flags, source, sport, dest, dport, "", uid, 0);
         redirect = is_address_allowed(args, objPacket);

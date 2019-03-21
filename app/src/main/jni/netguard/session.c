@@ -35,7 +35,7 @@ void clear(struct context *ctx) {
 }
 
 void *handle_events(void *a) {
-    syslog(LOG_CRIT, "smlun: [session.c, handle_events()] What does this method do?");
+    syslog(LOG_CRIT, "[session.c, handle_events()] What does this method do?");
     struct arguments *args = (struct arguments *) a;
     log_android(ANDROID_LOG_WARN, "Start events tun=%d", args->tun);
 
@@ -291,7 +291,6 @@ void check_allowed(const struct arguments *args) {
                     inet_ntop(AF_INET6, &s->icmp.saddr.ip6, source, sizeof(source));
                     inet_ntop(AF_INET6, &s->icmp.daddr.ip6, dest, sizeof(dest));
                 }
-                syslog(LOG_CRIT, "smlun: [session.c, check_allowed()] Creating packet in session.c using ICMP protocol.");
                 jobject objPacket = create_packet(
                         args, s->icmp.version, IPPROTO_ICMP, "",
                         source, 0, dest, 0, "", s->icmp.uid, 0);
@@ -311,7 +310,6 @@ void check_allowed(const struct arguments *args) {
                     inet_ntop(AF_INET6, &s->udp.saddr.ip6, source, sizeof(source));
                     inet_ntop(AF_INET6, &s->udp.daddr.ip6, dest, sizeof(dest));
                 }
-                syslog(LOG_CRIT, "smlun: [session.c, check_allowed()] Creating packet in ip.c using UDP protocol.");
                 jobject objPacket = create_packet(
                         args, s->udp.version, IPPROTO_UDP, "",
                         source, ntohs(s->udp.source), dest, ntohs(s->udp.dest), "", s->udp.uid, 0);
@@ -343,7 +341,6 @@ void check_allowed(const struct arguments *args) {
                     inet_ntop(AF_INET6, &s->tcp.saddr.ip6, source, sizeof(source));
                     inet_ntop(AF_INET6, &s->tcp.daddr.ip6, dest, sizeof(dest));
                 }
-                syslog(LOG_CRIT, "smlun: [session.c, check_allowed()] Creating packet in session.c using TCP protocol.");
                 jobject objPacket = create_packet(
                         args, s->tcp.version, IPPROTO_TCP, "",
                         source, ntohs(s->tcp.source), dest, ntohs(s->tcp.dest), "", s->tcp.uid, 0);

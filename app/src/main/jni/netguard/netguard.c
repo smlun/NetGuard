@@ -159,7 +159,7 @@ Java_eu_faircode_netguard_ServiceSinkhole_jni_1run(
     args->fwd53 = fwd53;
     args->rcode = rcode;
     args->ctx = ctx;
-    syslog(LOG_CRIT, "smlun: [netguard.c, jni_1run()] Call handle_events() right after blocking code(fcntl)");
+    syslog(LOG_CRIT, "[netguard.c, jni_1run()] Call handle_events() right after blocking code(fcntl)");
     handle_events(args);
 }
 
@@ -245,11 +245,11 @@ Java_eu_faircode_netguard_ServiceSinkhole_jni_1pcap(
     //if (pthread_mutex_lock(&lock))
     //    log_android(ANDROID_LOG_ERROR, "pthread_mutex_lock failed");
 
-    syslog(LOG_CRIT, "smlun: [netguard.c, jni_1pcap()] JNI call to jni_1pcap");
+    syslog(LOG_CRIT, "[netguard.c, jni_1pcap()] JNI call to jni_1pcap");
 
     if (name_ == NULL) {
         if (pcap_file != NULL) {
-            syslog(LOG_CRIT, "smlun: [netguard.c, jni_1pcap()] Setting flags using fcntl()");
+            syslog(LOG_CRIT, "[netguard.c, jni_1pcap()] Setting flags using fcntl()");
             int flags = fcntl(fileno(pcap_file), F_GETFL, 0);
             if (flags < 0 || fcntl(fileno(pcap_file), F_SETFL, flags & ~O_NONBLOCK) < 0)
                 log_android(ANDROID_LOG_ERROR, "PCAP fcntl ~O_NONBLOCK error %d: %s",
