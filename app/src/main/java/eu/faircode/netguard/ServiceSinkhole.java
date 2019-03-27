@@ -1606,7 +1606,7 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
             boolean block = (cursor.getInt(colBlock) > 0);
             long time = (cursor.isNull(colTime) ? new Date().getTime() : cursor.getLong(colTime));
             long ttl = (cursor.isNull(colTTL) ? 7 * 24 * 3600 * 1000L : cursor.getLong(colTTL));
-            int blockInt = (cursor.getInt(colBlock));
+            int blockInt = (cursor.getInt(colBlock)); // Introduce blockInt into IPRule
 
             if (isLockedDown(last_metered)) {
                 String[] pkg = getPackageManager().getPackagesForUid(uid);
@@ -1636,7 +1636,7 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
 
                         boolean exists = mapUidIPFilters.get(key).containsKey(iname); // If map already contains that key,
                         if (!exists || !mapUidIPFilters.get(key).get(iname).isBlocked()) { // If does not exist or not address is not blocked
-                            IPRule rule = new IPRule(key, name + "/" + iname, block, time + ttl, blockInt, aid);
+                            IPRule rule = new IPRule(key, name + "/" + iname, block, time + ttl, blockInt, aid); // Insert access table PK: ID
                             mapUidIPFilters.get(key).put(iname, rule); // Insert key inside
                             if (exists)
                                 Log.w(TAG, "Address conflict " + key + " " + daddr + "/" + dresource);
@@ -1897,13 +1897,11 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
                                     Log.i(TAG, "smlun: Checking timeout status...");
 
                                     if(DatabaseHelper.getInstance(ServiceSinkhole.this).blockTimeOut(packet.daddr, System.currentTimeMillis())) {
-
+                                       //If time-out, reset the access back to default (-1)
                                         DatabaseHelper.getInstance(ServiceSinkhole.this).setAccess(rule.aid,-1);
-
                                         ServiceSinkhole.reload("Allow packets for block next access", ServiceSinkhole.this, false);
 
                                         rule.blockInt = -1;
-
                                         filtered = false;
                                     }
                                 }
@@ -3113,8 +3111,8 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
         private String name;
         private boolean block;
         private long expires;
-        private int blockInt;
-        private int aid;
+        private int blockInt; // ADDED
+        private int aid; // ADDED
 
         public IPRule(IPKey key, String name, boolean block, long expires, int blockInt, int aid) {
             this.key = key;
