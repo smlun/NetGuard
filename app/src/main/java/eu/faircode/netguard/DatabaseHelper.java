@@ -263,6 +263,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    // Initial idea of updating access using address, but doesn't work
+    // Will be removed in future versions
     public void setAccessUsingAddress(String address, int block) {
         lock.writeLock().lock();
         try {
